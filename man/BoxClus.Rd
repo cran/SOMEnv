@@ -4,7 +4,7 @@
 \alias{BoxClus}
 \title{Boxplot of prototype variables split by cluster and variable}
 \usage{
-BoxClus(Dms, codebook, Cluster)
+BoxClus(Dms, codebook, Cluster, Centroids)
 }
 \arguments{
 \item{Dms}{A vector of length 2, where the first argument specifies the number of rows and the second the number of columns of plots (see mfrow in par)}
@@ -12,6 +12,8 @@ BoxClus(Dms, codebook, Cluster)
 \item{codebook}{De-normalized prototype codebook}
 
 \item{Cluster}{Vector containing cluster number assignment for prototypes}
+
+\item{Centroids}{Centroids matrix}
 }
 \value{
 Boxplot of prototype variables split by cluster

@@ -1,8 +1,16 @@
-##App085ter############### FUNZIONA (solo Run da R) !!!!!!!!!!!!!!!! Da 085 #
+## App corrected 20210211
 
-#Cambiata funzione SOMtopol e quindi cambiato un po' lo script nel server
-#Cambiato lo script per la conta delle Hits nel server (non comparivano i prototipi con 0 hits!)
+requiredPackages <- c("dplyr","plyr","openair", "rlist", "shiny", "colourpicker", "kohonen", "shinycssloaders", "shinycustomloader")
 
+
+ipak <- function(pkg){
+  new.pkg <- pkg[!(pkg %in% installed.packages()[, "Package"])]
+  if (length(new.pkg))
+    install.packages(new.pkg, dependencies = TRUE)
+  sapply(pkg, require, character.only = TRUE)
+}
+
+ipak(requiredPackages)
 
 #---- Upload file fino a 100 MB consentito:
 
@@ -64,7 +72,7 @@ CSS51<-'padding-left: 1px;padding-right: 1px;padding-top: 1px;padding-bottom: 1p
 
 ui <- pageWithSidebar(
 
-  headerPanel(div(style=CSSHeader,"SOMEnv Graphical User Interface (v 0.1.1)"),windowTitle = "SOMEnv GUI"),
+  headerPanel(div(style=CSSHeader,"SOMEnv Graphical User Interface (v 1.1.1)"),windowTitle = "SOMEnv GUI"),
 
   sidebarPanel(width=3,style='background: white; padding: 1px',
 
@@ -73,18 +81,17 @@ ui <- pageWithSidebar(
                ),# fluidRow END
 
                fluidRow(style='overflow-y:scroll;height:20vh;background: pink;padding-top: 1px;padding-bottom: 1px;padding-left: 1px;padding-right: 1px',
-                        tags$h4("An R package dedicated to the analysis of multivariate environmental high frequency data
-                  by Self-Organizing Map and k-means clustering algorithms"),
-                        tags$h5("Large datasets up to 100 MB are allowed!"),
+                        tags$h4("An R package for mining information from multivariate environmental high frequency data by Self-Organizing Map and k-means clustering algorithms"),
                         tags$h5("Authors: S. Licen, M. Franzon, T. Rodani, P. Barbieri"),
-                        tags$h5("Licence: GPL-2.0")
+                        tags$h5("Licence: GPL-3.0"),
+                        tags$h5("Large datasets up to 100 MB are allowed!")
                ),# fluidRow END
 
                fluidRow(style='overflow-y:scroll;height:60vh;background: mistyrose;padding-top: 5px;padding-bottom: 1px;padding-left: 1px;padding-right: 1px',
                         h4("Help"),
                         br(),
                         tags$p("
-Tab 1: Load data
+", tags$strong("Tab 1: Load Data")," ", tags$br() ,"
 Use Browse button to select the data file. Data are imported in the GUI using the ", tags$a(href=" https://www.rdocumentation.org/packages/openair/versions/2.7-4/topics/import","import"),"function from", tags$a(href="https://cran.r-project.org/web/packages/openair/index.html","openair"), "package.
 The data must be in table format in a txt file with date variable (or datetime variable)
 in the first column (the header must be 'date') and numeric variables in the following columns.
@@ -96,8 +103,9 @@ Under the above mentioned tables the number of total uploaded rows as well as th
 If the date format is not correct and/or one or more columns contain non numeric values some warnings appear.
 When the data are correctly loaded the user can move to the next tab.
 "),
+
 tags$p("
-Tab 2: SOM training
+", tags$strong("Tab 2: SOM training")," ", tags$br() ,"
 The SOM training is based on the use of",tags$a(href="https://www.rdocumentation.org/packages/kohonen/versions/3.0.10/topics/supersom", "som"), "function from", tags$a(href="https://cran.r-project.org/web/packages/kohonen/index.html", "kohonen package"), ". The parameter selection for training the SOM has not default values but some heuristic rules by Vesanto et al. (2000) are widely used, these rules have been embedded in the GUI. Thus, once the data are uploaded, the parameters related to that specific data are calculated. The map dimensions are calculated with three possible specifications (“small”, “medium”, ”large”), and the number of epochs and neighborhood radius vary accordingly. Nevertheless the user can choose custom values for every variable for training the SOM. The neighborhood function can be chosen between “gaussian” and “bubble”. For more details about parameter selection see Clark et al. (2020).
 Before training the map the data are by default scaled by variable to have zero mean and variance 1. Scaling is used to ensure all variables have the same importance during training, regardless of absolute magnitude. Moreover an initialization matrix for the SOM units is calculated based on the first two eigenvectors of the data as in Vesanto et al. (2000). Three parameters used in the som function from kohonen package are set by default: topology (“hexagonal”), distance measure (“Euclidean”), learning algorithm (“pbatch”).
 When the parameters are chosen pressing the Train SOM button starts the training.
@@ -108,8 +116,8 @@ If needed, the user can evaluate the quantization error (QE) and topographic err
 For more information about these parameters see Clark et al. (2020). Afterwards the user can move to the next tab.
 "),
 
-                  tags$p("
-Tab 3: SOM Map
+tags$p("
+", tags$strong("Tab 3: SOM Map")," ", tags$br() ,"
 This tab is provided to visualize the results obtained with the SOM training.
 First a “SOM_output” .RData file (obtained from the previous tab) has to be loaded using Browse and Load buttons.
 When loaded, a summary of the training parameters used is shown on the left. In the lower part of the screen several plots can be visualized, namely:
@@ -128,7 +136,7 @@ From this Tab on all the figures produced in the Tabs can be saved either “as 
 "),
 
                   tags$p("
-Tab 4: Kmeans clustering
+", tags$strong("Tab 4: Kmeans clustering")," ", tags$br() ,"
 In this Tab the user can further clusterize the data operating a second level clusterization on the codebook using a kmeans clustering algorithm (see Vesanto et al. (1999) and Clark et al. (2020) for details). The calculation are operated on the SOM_output .RData  uploaded in the previous tab.
 In brief for each number of clusters selected (k = from 2 to max) the kmeans clustering algorithm is run for 100 epochs obtaining a splitting of the units and a corresponding total quantization error for the codebook. The above mentioned algorithm can be run multiple times (iterating times) for each k, and the best of  these is selected based on sum of squared errors. For each iteration the function selects a new random seed to set the initialization parameters of the algorithm (see Vesanto et al. (2000)). To obtain reproducible results a seed can be set. In this case the algorithm is evaluated only once (one iteration) for each k. Setting a seed results in fixing the random procedure in order to obtain reproducible. Once selected the max number of clusters and the number of iterating times, press the Run button to start the calculation. The evaluation can take several minutes depending on the number of units and experimental variables. Two progress bars are visualized in the lower right corner of the screen to check the progress of the calculation. At the end of the calculation a Davies-Bouldin index plot appears (see Davies-Bouldin (1979)). The best cluster split is in correspondence to the lower value of the index. Then the user must save the results (a .RData file) using the button Download kmeans output. For details about the file content see Appendix below. The N.clusters control displays automatically the best number of clusters according to Davies-Bouldin index, nevertheless the user can also explore the results for a different number of k. Using the Plot button the SOM map with the cluster split is visualized. The cluster numbers are positioned at the units which are the centroids of the clusters respectively. The user can change the cluster colors clicking on the legend rectangles.
 
@@ -148,31 +156,32 @@ As the cluster numbering is random, if the user needs a different numbering of t
 The user can also load a previously obtained Kmeans_output.RData file (providing to previously load the corresponding SOM_output.RData file in Tab 3!!!) to explore the results. This is done checking the Load file? checkbox and loading the selected file. If the checkbox is unchecked again the user can go back to the latest kmeans evaluation.
                   "),
                   tags$p("
-Tab 5: Projection
+", tags$strong("Tab 5: Projection")," ", tags$br() ,"
 This tab allows to project into the model data which have not been used to build it. The data to be projected must have the same number of columns (variables) as the training data with date variable (or datetime variable) in the first column (the header must be 'date'). The data file is chosen using the Browse button. Press the Load button to load the data. When loaded, the first six rows (header) and the last six rows (tail) appear in the upper right part of the screen thus the user can check if the data have been uploaded correctly. The number of total uploaded rows as well as the number of deleted rows (containing NA values) are presented. Pressing the Projection button the data are normalized with the same parameters as the training data and projected into the model (referred to the .RData files loaded in Tab 3 and Tab 4). Then the user must save the results (a .RData file) using the button named Download Projection. For details about the file content see Appendix below.  Results can be explored visualizing them on the SOM map, for the options description (hits and qerrs) refer to Tab 3. The cluster profiles are built as explained for Tab 4 (options Exp by cluster and Exp by variable) but using the projected data. The visualization parameters of the latter are duplicated from those selected in Tab 4.
 The user can also load a previously obtained 'Projection_output' .RData file (providing to previously load the corresponding SOM_output .RData file in Tab 3 and Kmeans_output in Tab 4!!!) to explore the results. This is done checking the Load file? checkbox and loading the selected file. If the checkbox is unchecked again the user can go back to the latest projection.
                   "),
                   tags$p("
-Tab 6: Daily profiles
+", tags$strong("Tab 6: Daily profiles")," ", tags$br() ,"
 The results obtained in the previous tabs can be explored considering their time sequence. In this tab either the results obtained with the training data (from Tab 3) or the projected data (Tab 5) can be visualized. The visualization parameters of the graphs (e.g. colors, cluster numbering, Y range for the cluster profiles, etc..) are duplicated from those selected in Tab 4. The user can choose the time period to be represented using the controls  Starting date and Ending date. The user has to check the control Obs/Day which shows the number of observations for each day as guessed by the function. If the number is not correct, it has to be changed accordingly. Example: if the observations (samples) were recorded every 15 min then the number to be put in the control has to be 4 x 24 hours = 96.
 The Daily graph shows the cluster percentage frequency for each day (the X labels dimensions can be changed using the control above the graph). The corresponding table can be downloaded using the table button. The overall tab button downloads a table containing the cluster percentage splitting for the full period. The month tab button downloads a table containing the cluster percentage split by month.
 On the upper right of the screen a single observation (sample) can be selected. The BMU number, cluster number and quantization error of the sample are shown. The figure below uses the SOM map and cluster profiles of modeled variables as a legend to show the positioning of the sample respect to the evaluated model: the BMU is labelled by a black dot on the SOM map and the (normalized) experimental values of the sample are shown by red dots onto the corresponding cluster profile. The figure can be useful to visualize possible outliers (see Licen et al. (2018) and Licen et al. (2019)). Two buttons allow to download a table containing the cluster number assignment to the map units (Units cluster assignment) and the to the data (Data cluster assignment, either training or projection as selected in control Dataset). The cluster numbering corresponds to that selected by the user in Tab 4 (Cluster numbers: control).
                 "),
 
                 tags$p("
-References
-Clark et al. (2020): Clark, S., Sisson, S.A., Sharma, A. Tools for enhancing the application of self-organizing maps in water resources research and engineering (2020) Adv. Water Resour. 143, art. no. 103676. DOI: 10.1016/j.advwatres.2020.103676", tags$a(href="https://www.sciencedirect.com/science/article/pii/S030917081931139X", "Link"), "
-Davies-Bouldin (1979): D.L. Davies, D.W. Bouldin, A cluster separation measure, IEEE Trans. Pattern Anal. Mach. Intell. 1 (2) (1979) 224–227, http://dx.doi.org/10.1109/TPAMI. 1979.4766909.", tags$a(href="https://ieeexplore.ieee.org/document/4766909","Link"),"
-Licen et al. (2018): Licen, S., Barbieri, G., Fabbris, A., Briguglio, S.C., Pillon, A., Stel, F., Barbieri, P. Odor control map: Self organizing map built from electronic nose signals and integrated by different instrumental and sensorial data to obtain an assessment tool for real environmental scenarios (2018) Sens Actuators, B Chem, 263, pp. 476-485. DOI: 10.1016/j.snb.2018.02.144", tags$a(href="https://www.sciencedirect.com/science/article/pii/S0925400518304246","Link"),"
-Licen et al. (2019): Licen, S., Cozzutto, S., Barbieri, G., Crosera, M., Adami, G., Barbieri, P. Characterization of variability of air particulate matter size profiles recorded by optical particle counters near a complex emissive source by use of Self-Organizing Map algorithm (2019) Chemometr. Intelligent Lab. Syst., 190, pp. 48-54. DOI: 10.1016/j.chemolab.2019.05.008", tags$a(href="https://www.sciencedirect.com/science/article/pii/S0169743919301376", "Link"),"
-Licen et al. (2020a): Licen, S., Cozzutto, S., Barbieri, P. Assessment and comparison of multi-annual size profiles of particulate matter monitored at an urban-industrial site by an optical particle counter with a chemometric approach  (2020) Aerosol Air Qual. Res., 20 (4), pp. 800-809.DOI: 10.4209/aaqr.2019.08.0414", tags$a(href="https://aaqr.org/articles/aaqr-19-08-oa-0414", "Link"),"
-Licen et al. (2020b): Licen, S., Di Gilio, A., Palmisani, J., Petraccone, S., de Gennaro, G., Barbieri, P. Pattern recognition and anomaly detection by self-organizing maps in a multi month e-nose survey at an industrial site (2020) Sensors, 20 (7), art. no. 1887. DOI: 10.3390/s20071887.", tags$a(href=" https://www.mdpi.com/1424-8220/20/7/1887","Link"),"
-Ultsch et al. (1990): A. Ultsch, H.P. Siemon, Kohonen’s self organizing feature maps for exploratory data analysis, in: Proceedings of International Neural Network Conference (INNC’90), Kluwer academic Publishers, Dordrecht, 1990, pp. 305–308.
-Vesanto et al. (1999): Vesanto, J., 1999. SOM-based data visualization methods. Intelligent Data Analysis 3, 111–126. doi:10.1016/S1088-467X(99)00013-X", tags$a(href="https://www.sciencedirect.com/science/article/abs/pii/S1088467X9900013X?via%3Dihub", "Link"),"
-Vesanto et al. (2000): J. Vesanto, J. Himberg, E. Alhoniemi, J. Parhankagas, SOM Toolbox for Matlab 5, Report A57, 2000, Available at: www.cis.hut.fi/projects/somtoolbox/package/papers/techrep.pdf", tags$a(href="www.cis.hut.fi/projects/somtoolbox/package/papers/techrep.pdf","Link"),"
-                "),
+", tags$strong("References")," ", tags$br() ,""),
+tags$ul(
+tags$li("Clark et al. (2020): Clark, S., Sisson, S.A., Sharma, A. Tools for enhancing the application of self-organizing maps in water resources research and engineering (2020) Adv. Water Resour. 143, art. no. 103676. DOI: 10.1016/j.advwatres.2020.103676", tags$a(href="https://www.sciencedirect.com/science/article/pii/S030917081931139X", "Link")),
+tags$li("Davies-Bouldin (1979): D.L. Davies, D.W. Bouldin, A cluster separation measure, IEEE Trans. Pattern Anal. Mach. Intell. 1 (2) (1979) 224–227, http://dx.doi.org/10.1109/TPAMI. 1979.4766909.", tags$a(href="https://ieeexplore.ieee.org/document/4766909","Link"),""),
+tags$li("Licen et al. (2018): Licen, S., Barbieri, G., Fabbris, A., Briguglio, S.C., Pillon, A., Stel, F., Barbieri, P. Odor control map: Self organizing map built from electronic nose signals and integrated by different instrumental and sensorial data to obtain an assessment tool for real environmental scenarios (2018) Sens Actuators, B Chem, 263, pp. 476-485. DOI: 10.1016/j.snb.2018.02.144", tags$a(href="https://www.sciencedirect.com/science/article/pii/S0925400518304246","Link"),""),
+tags$li("Licen et al. (2019): Licen, S., Cozzutto, S., Barbieri, G., Crosera, M., Adami, G., Barbieri, P. Characterization of variability of air particulate matter size profiles recorded by optical particle counters near a complex emissive source by use of Self-Organizing Map algorithm (2019) Chemometr. Intelligent Lab. Syst., 190, pp. 48-54. DOI: 10.1016/j.chemolab.2019.05.008", tags$a(href="https://www.sciencedirect.com/science/article/pii/S0169743919301376", "Link"),""),
+tags$li("Licen et al. (2020a): Licen, S., Cozzutto, S., Barbieri, P. Assessment and comparison of multi-annual size profiles of particulate matter monitored at an urban-industrial site by an optical particle counter with a chemometric approach  (2020) Aerosol Air Qual. Res., 20 (4), pp. 800-809.DOI: 10.4209/aaqr.2019.08.0414", tags$a(href="https://aaqr.org/articles/aaqr-19-08-oa-0414", "Link"),""),
+tags$li("Licen et al. (2020b): Licen, S., Di Gilio, A., Palmisani, J., Petraccone, S., de Gennaro, G., Barbieri, P. Pattern recognition and anomaly detection by self-organizing maps in a multi month e-nose survey at an industrial site (2020) Sensors, 20 (7), art. no. 1887. DOI: 10.3390/s20071887.", tags$a(href=" https://www.mdpi.com/1424-8220/20/7/1887","Link"),""),
+tags$li("Ultsch et al. (1990): A. Ultsch, H.P. Siemon, Kohonen’s self organizing feature maps for exploratory data analysis, in: Proceedings of International Neural Network Conference (INNC’90), Kluwer academic Publishers, Dordrecht, 1990, pp. 305–308."),
+tags$li("Vesanto et al. (1999): Vesanto, J., 1999. SOM-based data visualization methods. Intelligent Data Analysis 3, 111–126. doi:10.1016/S1088-467X(99)00013-X", tags$a(href="https://www.sciencedirect.com/science/article/abs/pii/S1088467X9900013X?via%3Dihub", "Link"),""),
+tags$li("Vesanto et al. (2000): J. Vesanto, J. Himberg, E. Alhoniemi, J. Parhankagas, SOM Toolbox for Matlab 5, Report A57, 2000, Available at: www.cis.hut.fi/projects/somtoolbox/package/papers/techrep.pdf", tags$a(href="www.cis.hut.fi/projects/somtoolbox/package/papers/techrep.pdf","Link"),"")
+                ),
                 tags$p("
-Appendix
+", tags$strong("Appendix")," ", tags$br() ,"
 In this section the content of the output files is described. The files can be imported in R software using the function 'Load workspace' in the File menu. An object called 'x' is loaded. The content is detailed in the following:
 SOM_output.RData "),
                 tags$ul(
@@ -223,12 +232,12 @@ Projection_output.RData:
 
   mainPanel(width=9,style='background: white',
 
-            tabsetPanel(
+            tabsetPanel( 
               #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
               #                                                                    FIRST TAB
               #---------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-              tabPanel("Load data", fluid = TRUE,
+              tabPanel("Load data", fluid = TRUE, 
                        #              tags$style(CSS21),
                        fluidRow(width='80%', style='background: aliceblue;',
                                 # Input: File input and help ----
@@ -242,7 +251,7 @@ Projection_output.RData:
                                 ),# column END
                                 ############################### CAMBIATO DA QUI: ############################################################
                                 column(2,
-                                       tags$div(style= 'font-size:1em',textInput("text12", label="Separator:",",",width="100%")),
+                                       tags$div(style= 'font-size:1em',textInput("text12", label="Separator:","\t",width="100%")),
                                        tags$div(style= 'font-size:1em',textInput("text13", label="Decimal:",".",width="100%"))
 
                                        ############################### A QUI. ######################################################################
@@ -586,7 +595,7 @@ server <- function(input, output,session) {
   ############################### CAMBIATO DA QUI: ############################################################
 
   Experimental <- eventReactive(input$go11,{openair::import(input$Experimental$datapath,date="date",date.format=input$text11,
-                                                   file.type = "txt",header = 1,sep = input$text12,dec=input$text13)})
+                                                   file.type = "txt", header = 1, sep = input$text12, dec=input$text13)})
   ############################### A QUI. ######################################################################
   #--- Elimination of NA values:
 
@@ -623,7 +632,7 @@ server <- function(input, output,session) {
 
   #--- Default SOM map dimensions:
 
-  DimsD<-reactive({SOMEnv::som_dimR(dataset(),type=input$Size)}) #QUESTO dipende da un input, quindi non serve "Restore Button", basta ricambiare "Size" e si torna ai default!!!!
+  DimsD<-reactive({SOMEnv::som_dimR(dataset(),type=input$Size)}) #QUESTO dipende da un input "Size", quindi non serve "Restore Button", basta ricambiare "Size" e si torna ai default!!!!
 
   output$UIinput21 <- renderUI({if(input$go11==0) {
     tagList(
@@ -885,11 +894,15 @@ server <- function(input, output,session) {
 
   #-- Risultati aggiuntivi:
 
-  BCentr<-reactive({SOMEnv::BmusCentr(Kmeans()$centroids,SOMoutput()$som_model,input$n41)})
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+
+  BCentr<-reactive({BmusCentr(Kmeans()$centroids,SOMoutput()$som_model,length(Kmeans()$centroids))})
 
   ClusExp<-function() {D<-rep(0,nrow(SOMoutput()$ExpClean))
-  for (i in c(2:input$n41)) {d<-SOMEnv::BmusClus(SOMoutput()$Bmus,Kmeans()$clusNum[,i]);
+  for (i in c(2:length(Kmeans()$centroids))) {d<-BmusClus(SOMoutput()$Bmus,Kmeans()$clusNum[,i]);
   D<-cbind(D,d)}; return(data.frame(D))}
+
+  ############################### A QUI. ######################################################################
 
   #-- Output:
 
@@ -973,9 +986,14 @@ server <- function(input, output,session) {
 
 
   Centroids4<-reactive({data.frame(KmeansForPlot()$centroids[[input$n43]][order(numSeq41()),])})
-  clusNum4<-reactive({SOMEnv::NClusChange(KmeansForPlot()$clusNum[,input$n43],numSeq41())})
+
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+
+  clusNum4<-reactive({SOMEnv::NClusChange(KmeansForPlot()$clusNum[,input$n43],Centroids4(),numSeq41())})
   BCentr4<-reactive({KmeansForPlot()$BCentr[[input$n43]][order(numSeq41())]})
-  ClusExp4<-reactive({SOMEnv::NClusChange(KmeansForPlot()$ClusExp[,input$n43],numSeq41())})
+  ClusExp4<-reactive({SOMEnv::NClusChange(KmeansForPlot()$ClusExp[,input$n43],Centroids4(),numSeq41())})
+
+  ############################### A QUI. ######################################################################
 
 
   Plot42<- function() {if (is.null(KmeansForPlot())) {return(NULL)
@@ -1010,9 +1028,13 @@ server <- function(input, output,session) {
       column(7,splitLayout(cellWidths = c("8%","7%","10%","7%","10%","7%","12%","10%","12%","20%"),
                            h5(""),
                            div(style= 'font-size:1em; font-weight: bold',"Y min:"),
-                           div(style= CSS32,numericInput("y41", label=NULL, -3,width="100%")),
+
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+                           div(style= CSS32,numericInput("y41", label=NULL, -2,width="100%")),
                            div(style= 'font-size:1em; font-weight: bold',"Y max:"),
-                           div(style= CSS32,numericInput("y42", label=NULL, 3,width="100%")),
+                           div(style= CSS32,numericInput("y42", label=NULL, 2,width="100%")),
+  ############################### A QUI. ######################################################################
+
                            div(style= 'font-size:1em; font-weight: bold',"Y grid:"),
                            div(style= CSS32,textInput(inputId = "text42",label=NULL,value="-1,0,1",width="100%")),
                            div(style= 'font-size:1em; font-weight: bold',"Xlab dim:"),
@@ -1031,16 +1053,19 @@ server <- function(input, output,session) {
     )}
   })
 
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
 
   Plot43<- function() {if (is.null(KmeansForPlot())) {return(NULL)
   } else if (is.null(SOMoutput())) {return(NULL)
   } else if (length(numSeq41())!=input$n43) {return(NULL)
   } else {switch(input$menu41,
-                 "by cluster"={SOMEnv::BoxUnits(SOMoutput()$codebook,clusNum4(),Ylim=numSeq43(),pitch=numSeq42(),xdim=input$x41)},
-                 "by variable"={SOMEnv::BoxClus(c(input$n44,input$n45),SOMoutput()$DeCod,clusNum4())},
-                 "Exp by cluster"={SOMEnv::BoxUnits(SOMoutput()$dataset,ClusExp4(),Ylim=numSeq43(),pitch=numSeq42(),xdim=input$x41)},
-                 "Exp by variable"={SOMEnv::BoxClus(c(input$n44,input$n45),SOMoutput()$ExpClean[,-1],ClusExp4())})}
+                 "by cluster"={SOMEnv::BoxUnits(SOMoutput()$codebook,clusNum4(),Centroids4(),Ylim=numSeq43(),pitch=numSeq42(),xdim=input$x41)},
+                 "by variable"={SOMEnv::BoxClus(c(input$n44,input$n45),SOMoutput()$DeCod,clusNum4(),Centroids4())},
+                 "Exp by cluster"={SOMEnv::BoxUnits(SOMoutput()$dataset,ClusExp4(),Centroids4(),Ylim=numSeq43(),pitch=numSeq42(),xdim=input$x41)},
+                 "Exp by variable"={SOMEnv::BoxClus(c(input$n44,input$n45),SOMoutput()$ExpClean[,-1],ClusExp4(),Centroids4())})}
   }
+
+  ############################### A QUI. ######################################################################
 
   output$plot43<-renderPlot({if (is.null(KmeansForPlot())|input$go43==0 ) {return(NULL)
   } else if (is.null(SOMoutput())) {return(NULL)
@@ -1092,8 +1117,13 @@ server <- function(input, output,session) {
   BmusPROJ<-reactive({Projection()$unit.classif})
   QerrsPROJ<-reactive({Projection()$distances})
 
-  BmusFreqPROJ<-reactive({data.frame(table(BmusPROJ()))})
-  HitsPROJ<-reactive({BmusFreqPROJ()$Freq})
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+
+  BmusFreqPROJ<-reactive({factor(BmusPROJ(), levels=c(1:SOMoutput()$Dims$munits))})
+  TabHitsPROJ<-reactive({data.frame(table(BmusFreqPROJ()))})
+  HitsPROJ<-reactive({TabHitsPROJ()$Freq})
+
+  ############################### A QUI. ######################################################################
 
 
   output$texto53<-renderPrint({if (input$go52==0) {cat("", sep = "")
@@ -1108,9 +1138,13 @@ server <- function(input, output,session) {
 
   #---- Cluster assignment (respect to Kmeans graphs in third tab!)
 
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+
   ClusProj<-function() {D<-rep(0,length(BmusPROJ()))
-  for (i in c(2:length(KmeansForPlot()$ind))) {d<-SOMEnv::BmusClus(BmusPROJ(),KmeansForPlot()$clusNum[,i]);
+  for (i in c(2:length(KmeansForPlot()$centroids))) {d<-BmusClus(BmusPROJ(),KmeansForPlot()$clusNum[,i]);
   D<-cbind(D,d)}; return(data.frame(D))}
+
+  ############################### A QUI. ######################################################################
 
 
 
@@ -1181,18 +1215,20 @@ server <- function(input, output,session) {
 
   #-- Cluster profiles (projection) --> respect to fourth tab parameters!!!
 
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
 
-  ClusProj4<-reactive({SOMEnv::NClusChange(ProjForPlot()$ClusProj[,input$n43],numSeq41())})
-
+  ClusProj4<-reactive({SOMEnv::NClusChange(ProjForPlot()$ClusProj[,input$n43],Centroids4(),numSeq41())})
 
 
   Plot52<- function() {if (is.null(ProjForPlot())) {return(NULL)
   } else if (is.null(ProjForPlot())) {return(NULL)
   } else if (length(numSeq41())!=input$n43) {return(NULL)
   } else {switch(input$menu53,
-                 "Proj by cluster"={SOMEnv::BoxUnits(ProjForPlot()$newdata,ClusProj4(),Ylim=numSeq43(),pitch=numSeq42(),xdim=input$x41)},
-                 "Proj by variable"={SOMEnv::BoxClus(c(input$n44,input$n45),ProjForPlot()$OtherClean[,-1],ClusProj4())})}
+                 "Proj by cluster"={SOMEnv::BoxUnits(ProjForPlot()$newdata,ClusProj4(),Centroids4(),Ylim=numSeq43(),pitch=numSeq42(),xdim=input$x41)},
+                 "Proj by variable"={SOMEnv::BoxClus(c(input$n44,input$n45),ProjForPlot()$OtherClean[,-1],ClusProj4(),Centroids4())})}
   }
+
+  ############################### A QUI. ######################################################################
 
   output$plot52<-renderPlot({if (is.null(ProjForPlot())) {return(NULL)
   } else {Plot52()}
@@ -1224,7 +1260,7 @@ server <- function(input, output,session) {
 
   Guess<-reactive({format(ForDailyGraph()$date,"%d/%m/%Y")})
   Guess2<-reactive({ordered(Guess(), levels = unique(Guess()))})
-  Count<-reactive({count(Guess2())})
+  Count<-reactive({plyr::count(Guess2())})
   Total<-reactive({round(median(Count()$freq,na.rm=T),digit=0)})
 
   output$UIinput63 <- renderUI({tagList(div(style= CSS32,numericInput("n61", label="Obs/Day", Total(),width="80%"))
@@ -1232,7 +1268,7 @@ server <- function(input, output,session) {
 
   #--- Scelta intervallo dati
 
-  dateStart61<-function() {paste(                     #--------------------------------------------------># QUA SISTEMARE CON req FUNCTION!!!!!
+  dateStart61<-function() {paste(                     
     substr(ForDailyGraph()[1,"date"], 9, 10),"/",
     substr(ForDailyGraph()[1,"date"], 6, 7),"/",
     substr(ForDailyGraph()[1,"date"], 1, 4),sep="")}
@@ -1252,7 +1288,11 @@ server <- function(input, output,session) {
 
   #--- Daily Graph
 
-  Plot61<- function() {SOMEnv::DailyBar(Selection(),Selection()$Cluster,colSeq=colSeq4(),Total=input$n61,xdim=input$x61,ydim=0.8)}
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+
+  Plot61<- function() {SOMEnv::DailyBar(Selection(),Selection()$Cluster,Centroids4(),colSeq=colSeq4(),Total=input$n61,xdim=input$x61,ydim=0.8)}
+
+  ############################### A QUI. ######################################################################
 
   output$plot61<- renderPlot({Plot61()})
 
@@ -1266,33 +1306,48 @@ server <- function(input, output,session) {
 
   #--- Download tables:
 
-  Table61<-function() {SOMEnv::FreqD(Selection()$date,Selection()$Cluster,Total=input$n61)}
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+
+  Table61<-function() {SOMEnv::FreqD(Selection()$date,Selection()$Cluster,Centroids4(),Total=input$n61)}
+
+  ############################### A QUI. ######################################################################
 
   output$down62 <- downloadHandler(filename ="Interval selection.txt",
                                    content = function(file) {
                                      write.table(Table61(), file, row.names = T,col.names=T,sep="\t",quote=F)}
   )
 
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+
   Table62<-function() {switch(input$menu61,
-                              "training"={SOMEnv::Freq(ClusExp4())},
-                              "projection"={SOMEnv::Freq(ClusProj4())})
+                              "training"={SOMEnv::Freq(ClusExp4(),Centroids4())},
+                              "projection"={SOMEnv::Freq(ClusProj4(),Centroids4())})
   }
+
+  ############################### A QUI. ######################################################################
 
   output$down63 <- downloadHandler(filename ="Overall.txt",
                                    content = function(file) {
                                      write.table(Table62(), file, row.names = F,col.names=T,sep="\t",quote=F)}
   )
 
-  Table63<-function() {SOMEnv::FreqM(ForDailyGraph()$date,ForDailyGraph()$Cluster)}
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+
+  Table63<-function() {SOMEnv::FreqM(ForDailyGraph()$date,ForDailyGraph()$Cluster,Centroids4())}
+
+  ############################### A QUI. ######################################################################
+
 
   output$down64 <- downloadHandler(filename ="Monthly.txt",
                                    content = function(file) {
                                      write.table(Table63(), file, row.names = F,col.names=T,sep="\t",quote=F)}
   )
 
-  ############################### AGGIUNTO DA QUI: ############################################################
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
 
-  Table64<-function() {data.frame(Unit=c(1:length(clusNum4)),Cluster=clusNum4())}
+  Table64<-function() {data.frame(Unit=c(1:length(clusNum4())),Cluster=clusNum4())}
+
+  ############################### A QUI. ######################################################################
 
   output$down66 <- downloadHandler(filename ="Unit cluster assignment.txt",
                                    content = function(file) {
@@ -1306,7 +1361,6 @@ server <- function(input, output,session) {
                                      write.table(Table65(), file, row.names = F,col.names=T,sep="\t",quote=F)}
   )
 
-  ############################### A QUI. ######################################################################
 
 
 
@@ -1347,7 +1401,11 @@ server <- function(input, output,session) {
     Ymax<-input$n43+0.5
     nClus<-input$n43
     Names<-colnames(SOMoutput()$codebook)
-    Xlim<-c(1,ncol(SOMoutput()$codebook))
+
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+    Xlim<-c(0.5,ncol(SOMoutput()$codebook)+0.5)
+  ############################### A QUI. ######################################################################
+
     Ylim<-numSeq43()
     pitch<-numSeq42()
     Xdim<-input$x41
@@ -1367,18 +1425,29 @@ server <- function(input, output,session) {
     NULLO<-data.frame(matrix(-100000,nrow=nClus,ncol=ncol(SOMoutput()$codebook)))
     NULLO[SelDay()[i,"Cluster"],]<-SelBOX()[i,-1]
     for (w in c(1:nClus)) {
-      opar <- par(fig=c(0.5, 1, SeqB[w+1], SeqB[w]),mar=c(1.4,1,1.7,0.5),oma=c(0.5,0.5,0,0.5),xpd=FALSE,pty="m",family="serif");
+
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+      opar <- par(fig=c(0.5, 1, SeqB[w+1], SeqB[w]),mar=c(1,1,1,0.5),oma=c(0.5,0.5,0,0.5),xpd=FALSE,pty="m",family="serif");
+  ############################### A QUI. ######################################################################
+
       opar <- par(new=TRUE);
       boxplot(SOMoutput()$codebook[which(clusNum4()==w),1],range=0,xaxt="n",yaxt="n",xlim=Xlim,ylim=Ylim,boxwex=0.9,at=1,whisklty = 0, staplelty = 0);
       abline(h=pitch,col="gray");
       for (f in c(1:ncol(SOMoutput()$codebook)))
       {boxplot(SOMoutput()$codebook[which(clusNum4()==w),f],range=0,xaxt="n",yaxt="n",boxwex=1,at=f,add=TRUE,whisklty = 0, staplelty = 0)};
       axis(1,at=seq(1,ncol(SOMoutput()$codebook),1),labels=NA,tcl=-0.3,cex.axis=Xdim);
-      axis(1,at=seq(1,ncol(SOMoutput()$codebook),1),labels=Names,lwd=0,line=-0.5,cex.axis=Xdim,las=2);
+
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
+      axis(1,at=seq(1,ncol(SOMoutput()$codebook),1),labels=Names,lwd=0,line=-0.5,cex.axis=Xdim);
+  ############################### A QUI. ######################################################################
+
       axis(2,at=pitch,labels=NA,tcl=-0.3,cex.axis=0.6);
+
+  ############################### CORRETTO DA QUI: 20210211 ###############################################
       axis(2,at=pitch,labels=pitch,lwd=0,line=-0.7,cex.axis=0.6,las=2);
-      mtext(paste("Cluster ",w,sep=""),line = 0.2,side=3,cex=0.75,family="serif");
       points(seq(1,ncol(SOMoutput()$codebook),1),NULLO[w,], pch=16,col="red",cex=0.7)
+  ############################### A QUI. ######################################################################
+
       on.exit(par(opar))
     }
     on.exit(par(opar))

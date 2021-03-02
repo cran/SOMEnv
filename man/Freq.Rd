@@ -4,10 +4,12 @@
 \alias{Freq}
 \title{Percentage frequency for each cluster}
 \usage{
-Freq(Cluster)
+Freq(Cluster, Centroids)
 }
 \arguments{
 \item{Cluster}{Vector containing cluster number assignment for experimental data}
+
+\item{Centroids}{Centroids matrix}
 }
 \value{
 A data frame containing the percentage frequency of each cluster

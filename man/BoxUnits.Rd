@@ -4,12 +4,14 @@
 \alias{BoxUnits}
 \title{Boxplot of prototype variables split by cluster}
 \usage{
-BoxUnits(codebook, Cluster, Ylim = NA, pitch = NA, xdim = 0.75)
+BoxUnits(codebook, Cluster, Centroids, Ylim = NA, pitch = NA, xdim = 0.75)
 }
 \arguments{
 \item{codebook}{Prototype codebook normalized by variable}
 
 \item{Cluster}{Vector containing cluster number assignment for prototypes}
+
+\item{Centroids}{Centroids matrix}
 
 \item{Ylim}{Vector of length 2 for y-axis limits}
 

@@ -4,6 +4,7 @@
 #'
 #' @param experimental Experimental data (must contain variable "date")
 #' @param TrainClus Vector containing cluster number assignment for experimental data
+#' @param Centroids Centroids matrix
 #' @param colSeq Color sequence for the clusters
 #' @param Total Number of observations per day
 #' @param xdim x axes label dimensions
@@ -19,9 +20,9 @@
 #' @export
 
 
-DailyBar<-function(experimental,TrainClus,colSeq=rainbow(length(levels(as.factor(TrainClus)))),Total=1440,xdim=0.7,ydim=0.8)
+DailyBar<-function(experimental,TrainClus,Centroids,colSeq=rainbow(nrow(data.frame(Centroids))),Total=1440,xdim=0.7,ydim=0.8)
 {colSeq<-c(colSeq,"black");
- nClus<-length(levels(as.factor(TrainClus)))
+ nClus<-nrow(data.frame(Centroids));
  g<-as.POSIXct(substr(experimental$date, 1, 10),format = "%Y-%m-%d",tz="GMT")#NEW!!!
  g2<-levels(as.factor(g))
  interval<-seq(as.POSIXct(g2[1],format = "%Y-%m-%d",tz="GMT"), as.POSIXct(g2[length(g2)],format = "%Y-%m-%d",tz="GMT"), by = "1 day")

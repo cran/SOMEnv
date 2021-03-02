@@ -3,6 +3,7 @@
 #'
 #' @param Date Vector containing date/time variable for experimental data
 #' @param Cluster Vector containing cluster number assignment for experimental data
+#' @param Centroids Centroids matrix
 #' @param Total Number of observations per day
 #' @author Sabina Licen
 #' @return A data frame containing the daily percentage frequency of each cluster
@@ -11,8 +12,8 @@
 #' }
 #' @export
 
-FreqD<-function(Date,Cluster,Total=1440)
-{   nClus<-length(levels(as.factor(Cluster)))
+FreqD<-function(Date,Cluster,Centroids,Total=1440)
+{   nClus<-nrow(data.frame(Centroids));
  g<-as.POSIXct(substr(Date, 1, 10),format = "%Y-%m-%d",tz="GMT")#NEW!!!
  g2<-levels(as.factor(g))
  interval<-seq(as.POSIXct(g2[1],format = "%Y-%m-%d",tz="GMT"), as.POSIXct(g2[length(g2)],format = "%Y-%m-%d",tz="GMT"), by = "1 day")

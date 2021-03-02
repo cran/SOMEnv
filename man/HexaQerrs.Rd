@@ -2,7 +2,7 @@
 % Please edit documentation in R/HexaQerrs.R
 \name{HexaQerrs}
 \alias{HexaQerrs}
-\title{Realtive quantization error distribution on the SOM map}
+\title{Relative quantization error distribution on the SOM map}
 \usage{
 HexaQerrs(bmus, qerrs, Coord, Row, Col, color = "black")
 }
@@ -20,16 +20,16 @@ HexaQerrs(bmus, qerrs, Coord, Row, Col, color = "black")
 \item{color}{color filling of the hexagonsType a message}
 }
 \value{
-Plot a SOM map with filled hexagons according to the realtive quantization error
+Plot a SOM map with filled hexagons according to the relative quantization error
 }
 \description{
-Plot a SOM map with realtive quantization error plotted as grayscale according to quartiles
+Plot a SOM map with relative quantization error plotted as grayscale according to quartiles
 }
 \details{
 The function evaluate the relative quantization error for each prototype
 dividing the sum of quantization errors for experimental samples represented by the single
 prototype by the number of hits of the same prototype,
-then plots a SOM map with with filled hexagons according to the realtive quantization error
+then plots a SOM map with filled hexagons according to the relative quantization error
 }
 \references{
 {Licen, S., Cozzutto, S., Barbieri, P. (2020) Aerosol Air Qual. Res., 20 (4), pp. 800-809. DOI: 10.4209/aaqr.2019.08.0414

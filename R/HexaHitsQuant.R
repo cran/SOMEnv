@@ -20,7 +20,7 @@
 #' @export
 
 HexaHitsQuant<-function(hits,Coord,Row,Col)
-{ Hexagons(Coord,Row,Col,color = NA, border = NA);
+{ 
   colSeq <- c("white","gray85","gray75","gray60","gray50","black");
   Hits<-unlist(hits, recursive = TRUE, use.names = FALSE);
   BOX<-boxplot(Hits,plot=FALSE);
@@ -36,6 +36,9 @@ DIV<-.bincode(Hits, breaks=Breaks,include.lowest = FALSE, right = TRUE);
       ab<-as.factor(as.numeric(DIV));
      FACT<-factor(ab,levels=levels(ab),Labels[as.numeric(levels(ab))]);
      FACT<-as.character(FACT)
+   opar <- par(mar=c(1,1,1,1),pty="m",xpd=TRUE,family="serif");
+Hexagons(Coord,Row,Col,color = NA, border = NA);
 for (i in c(1:nrow(Coord))) {Hexa(Coord$X[i],Coord$Y[i],color=as.character(FACT[i]),border="gray85")};
+   on.exit(par(opar))
 }
 

@@ -7,7 +7,8 @@
 DailyBar(
   experimental,
   TrainClus,
-  colSeq = rainbow(length(levels(as.factor(TrainClus)))),
+  Centroids,
+  colSeq = rainbow(nrow(data.frame(Centroids))),
   Total = 1440,
   xdim = 0.7,
   ydim = 0.8
@@ -17,6 +18,8 @@ DailyBar(
 \item{experimental}{Experimental data (must contain variable "date")}
 
 \item{TrainClus}{Vector containing cluster number assignment for experimental data}
+
+\item{Centroids}{Centroids matrix}
 
 \item{colSeq}{Color sequence for the clusters}
 

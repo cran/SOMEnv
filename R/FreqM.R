@@ -3,6 +3,7 @@
 #'
 #' @param Date Vector containing date/time variable for experimental data
 #' @param Cluster Vector containing cluster number assignment for experimental data
+#' @param Centroids Centroids matrix
 #' @author Sabina Licen
 #' @return A data frame containing the monthly percentage frequency of each cluster
 #' @import openair
@@ -11,8 +12,8 @@
 #' @export
 
 
-FreqM<-function(Date,Cluster)
-{   nClus<-length(levels(as.factor(Cluster)))
+FreqM<-function(Date,Cluster,Centroids)
+{   nClus<-nrow(data.frame(Centroids));
     ORIGINALS<-data.frame(date=Date,Cluster=Cluster)
     mydata <- cutData(ORIGINALS, type = "monthyear")
     Months<-levels(mydata$monthyear)

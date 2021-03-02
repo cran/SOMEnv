@@ -4,12 +4,14 @@
 \alias{FreqD}
 \title{Daily percentage frequency for each cluster}
 \usage{
-FreqD(Date, Cluster, Total = 1440)
+FreqD(Date, Cluster, Centroids, Total = 1440)
 }
 \arguments{
 \item{Date}{Vector containing date/time variable for experimental data}
 
 \item{Cluster}{Vector containing cluster number assignment for experimental data}
+
+\item{Centroids}{Centroids matrix}
 
 \item{Total}{Number of observations per day}
 }

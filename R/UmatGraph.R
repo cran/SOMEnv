@@ -46,7 +46,7 @@ DIV<-.bincode(Var, breaks=Breaks,include.lowest = FALSE, right = TRUE);
      FACT<-as.character(FACT)
 unitcell<-1
 Apo<-unitcell/2;R<-Apo/(cos(pi/6));
-opar <- par(mar=c(1,1,1,2),pty="m",xpd=TRUE,family="serif");
+opar <- par(mar=c(1,1,1,1),pty="m",xpd=TRUE,family="serif");
 plot(c(1-2*Apo,(Col*2-1)+Apo),c(1-R,1+((Row*2-1)-1)*(R*1.5)+R),
 type="n",xlab="",ylab="",xaxs="i",yaxs="i",xaxt="n",yaxt="n",bty="n");
 for (i in c(1:nrow(UMAT))) {Hexa(UMAT$X[i],UMAT$Y[i],color=as.character(FACT[i]),border=NA)};

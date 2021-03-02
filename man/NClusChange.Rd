@@ -4,15 +4,17 @@
 \alias{NClusChange}
 \title{Custom number sequence for clusters}
 \usage{
-NClusChange(Vector, NCh)
+NClusChange(Vector, Centroids, NCh)
 }
 \arguments{
 \item{Vector}{Vector containing cluster number assignment for prototypes or experimental data}
 
+\item{Centroids}{Centroids matrix}
+
 \item{NCh}{Vector with custom sequence of numbers for clusters}
 }
 \value{
-A vector of same length as input vector with cluuster numbers changed according to custom input
+A vector of same length as input vector with cluster numbers changed according to custom input
 }
 \description{
 Changes the input vector according the custom number sequence for clusters

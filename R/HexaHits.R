@@ -17,8 +17,9 @@ HexaHits<-function(hits,Coord,Row,Col,color="black")
 {  Unitcell<-1
    Hits<-unlist(hits, recursive = TRUE, use.names = FALSE);
    HitsNorm<-round(Hits/max(Hits,na.rm=T)*100,digits=0);
+   opar <- par(mar=c(1,1,1,1),pty="m",xpd=TRUE,family="serif");
    Hexagons(Coord,Row,Col,color = NA, border = "gray");
    for (i in c(1:nrow(Coord))) {Hexa(Coord$X[i],Coord$Y[i],unitcell=Unitcell*HitsNorm[i]/100,color=color,border=NA)}
+   on.exit(par(opar))
 }
-
 

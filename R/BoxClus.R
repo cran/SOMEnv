@@ -5,6 +5,7 @@
 #' @param Dms A vector of length 2, where the first argument specifies the number of rows and the second the number of columns of plots (see mfrow in par)
 #' @param codebook De-normalized prototype codebook
 #' @param Cluster Vector containing cluster number assignment for prototypes
+#' @param Centroids Centroids matrix
 #' @author Sabina Licen
 #' @return Boxplot of prototype variables split by cluster
 #' @seealso boxplot, par
@@ -15,19 +16,20 @@
 
 
 
-BoxClus<-function (Dms,codebook,Cluster)
-{ ColIndex<-c(1:ncol(codebook))
+BoxClus<-function (Dms,codebook,Cluster,Centroids)
+{ nClus<-nrow(data.frame(Centroids));
+  ColIndex<-c(1:ncol(codebook))
   if ((Dms[1]*Dms[2])>=length(ColIndex)) {ColIndex<-ColIndex
   } else {ColIndex<-c(1:(Dms[1]*Dms[2]))}
   opar <- par(mfrow=Dms,oma=c(0.5,0.5,0.5,0.5),mar=c(1.5,1.5,2,1),xpd=FALSE,pty="m",family="serif")
 for (j in ColIndex) {
   Var<-j
-  BOX<-boxplot(codebook[,Var]~Cluster,xaxt="n",yaxt="n",boxwex=0.8,range=0)
-  axis(1,at=seq(1,length(levels(as.factor(Cluster))),1),labels=NA,tcl=-0.3,cex.axis=0.7);
-  axis(1,at=seq(1,length(levels(as.factor(Cluster))),1),seq(1,length(levels(as.factor(Cluster))),1),lwd=0,line=-0.5,cex.axis=0.9)
+  BOX<-boxplot(codebook[,Var]~Cluster,xaxt="n",yaxt="n",boxwex=0.8,range=0,xlim=c(0.5,nClus+0.5),at=as.numeric(levels(as.factor(Cluster))))
+  axis(1,at=seq(1,nClus,1),labels=NA,tcl=-0.3,cex.axis=0.7);
+  axis(1,at=seq(1,nClus,1),seq(1,nClus,1),lwd=0,line=-0.5,cex.axis=0.9)
   axis(2,labels=NA,tcl=-0.3,cex.axis=0.7);
   axis(2,lwd=0,line=-0.7,cex.axis=0.65,las=2)
-  mtext(colnames(codebook)[Var],line = 0.2,side=3,cex=0.65,family="serif")
+  mtext(colnames(codebook)[Var],line = 0.2,side=3,cex=0.85,family="serif")
   on.exit(par(opar))
                }
 }

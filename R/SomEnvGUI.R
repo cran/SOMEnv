@@ -11,11 +11,11 @@
 #' }
 #'
 #'seealso shiny
-#' @import dplyr openair
-#' @rawNamespace (colourpicker, except = runExample)
-#' @import openair shinycssloaders shinycustomloader kohonen rlist plyr
+#' @import dplyr openair shiny colourpicker shinycssloaders shinycustomloader 
 #' @importFrom grDevices rainbow
 #' @importFrom graphics abline axis barplot boxplot legend mtext par polygon text
+#' @importFrom kohonen map
+#' @importFrom plyr mapvalues
 #' @importFrom shiny incProgress withProgress
 #' @importFrom stats cor dist median quantile
 #' @export

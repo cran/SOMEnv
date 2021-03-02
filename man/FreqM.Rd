@@ -4,12 +4,14 @@
 \alias{FreqM}
 \title{Monthly percentage frequency for each cluster}
 \usage{
-FreqM(Date, Cluster)
+FreqM(Date, Cluster, Centroids)
 }
 \arguments{
 \item{Date}{Vector containing date/time variable for experimental data}
 
 \item{Cluster}{Vector containing cluster number assignment for experimental data}
+
+\item{Centroids}{Centroids matrix}
 }
 \value{
 A data frame containing the monthly percentage frequency of each cluster
