@@ -1,5 +1,5 @@
-01d59348fb7e990ee0e94a23ff506870 *DESCRIPTION
-46ea664774eb7e36714bcb7ee80581a7 *NAMESPACE
+3b8adf8c7f14118f33aef4f0397c6707 *DESCRIPTION
+2764d59d48c55ef0e2fb19e7b17508db *NAMESPACE
 7d1c6a4c3ed3d84b2ce83f7429e0e586 *R/BmusCentr.R
 30e1fcc99de1b711ad9773333ca4e17a *R/BmusClus.R
 4f4469d7d93bda4042388018913405fa *R/BoxClus.R
@@ -20,7 +20,7 @@ cc3791d3ae929fb9ec2c91dfa3601859 *R/HexaHitsQuant.R
 88efb3fef450b7f0a418436d653ca4a1 *R/HexagonsVar.R
 8875913858e73ea6adeb3919c8e8d7ee *R/NClusChange.R
 38fe8cde4f3fcc2eb68ed6237b5d64fd *R/SOMtopol.R
-105d1069262d499acc654b2766b9817e *R/SomEnvGUI.R
+b1c12a3e4e75b1903ffae247d1c88d86 *R/SomEnvGUI.R
 fba5fdf999c5753e35631c92c7001ba9 *R/UmatGraph.R
 94d471bece96e3e428c4675977fc85aa *R/db_indexR.R
 02f7a846e3c137bec5e44bf1b9339337 *R/kmeans_clustersRProg.R
@@ -31,8 +31,8 @@ fc52d31970dab0d1ea2454610eb7a924 *R/som_kmeansRProg.R
 279653229cb8906ac785fb5233fef235 *R/som_mdistR.R
 5a9ff90acdb17b9936a2e208e0810a24 *R/som_umatR.R
 e657c2ef61d57b6694bd70ee3cf788b1 *R/zzz.R
-0ffddf170b7f5266579e9cf8893b41b3 *inst/CITATION
-a99f68c4bf819117bb207d25c6111948 *inst/shiny-examples/myapp/app.R
+b0619acbee1ecde2999a9582d7bfcbe0 *inst/CITATION
+430c08c89172510e27ac34f616b281ee *inst/shiny-examples/myapp/app.R
 892b354b0c786eebaab18955532cdeb0 *inst/shiny-examples/myapp/www/Logo.jpg
 04a56d21f497cf071bb198598b643532 *man/BmusCentr.Rd
 70c26db802ffb5c6f3a81d4dec67dfb8 *man/BmusClus.Rd

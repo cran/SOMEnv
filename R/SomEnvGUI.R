@@ -11,7 +11,8 @@
 #' }
 #'
 #'seealso shiny
-#' @import dplyr openair shiny colourpicker shinycssloaders shinycustomloader 
+#' @import dplyr openair shinycssloaders shinycustomloader 
+#' @importFrom colourpicker colourInput
 #' @importFrom grDevices rainbow
 #' @importFrom graphics abline axis barplot boxplot legend mtext par polygon text
 #' @importFrom kohonen map

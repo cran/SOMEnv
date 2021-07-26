@@ -1,6 +1,6 @@
 ## App corrected 20210211
 
-requiredPackages <- c("dplyr","plyr","openair", "rlist", "shiny", "colourpicker", "kohonen", "shinycssloaders", "shinycustomloader")
+requiredPackages <- c("dplyr","plyr","openair", "rlist", "shiny", "kohonen", "shinycssloaders", "shinycustomloader")
 
 
 ipak <- function(pkg){
@@ -72,7 +72,7 @@ CSS51<-'padding-left: 1px;padding-right: 1px;padding-top: 1px;padding-bottom: 1p
 
 ui <- pageWithSidebar(
 
-  headerPanel(div(style=CSSHeader,"SOMEnv Graphical User Interface (v 1.1.1)"),windowTitle = "SOMEnv GUI"),
+  headerPanel(div(style=CSSHeader,"SOMEnv Graphical User Interface (v 1.1.2)"),windowTitle = "SOMEnv GUI"),
 
   sidebarPanel(width=3,style='background: white; padding: 1px',
 
@@ -928,14 +928,14 @@ server <- function(input, output,session) {
   output$UIinput42 <- renderUI({tagList(
     fluidRow(
       column(2,div(style= 'font-size:1em',numericInput("n43", label="N.clusters:", BestClus(),min=2,width="80%"))),
-      column(1,colourInput("col40", label=div(style= CSS34,"Cl 1"), "red",showColour="background",returnName=T,palette="limited")),
-      column(1,colourInput("col41", label=div(style= CSS34,"Cl 2"), "yellow",showColour="background",returnName=T,palette="limited")),
-      conditionalPanel("input.n43>=3",column(1,colourInput("col42", label=div(style= CSS34,"Cl 3"), "green",showColour="background",returnName=T,palette="limited"))),
-      conditionalPanel("input.n43>=4",column(1,colourInput("col43", label=div(style= CSS34,"Cl 4"), "cyan",showColour="background",returnName=T,palette="limited"))),
-      conditionalPanel("input.n43>=5",column(1,colourInput("col44", label=div(style= CSS34,"Cl 5"), "darkorange1",showColour="background",returnName=T,palette="limited"))),
-      conditionalPanel("input.n43>=6",column(1,colourInput("col45", label=div(style= CSS34,"Cl 6"), "magenta",showColour="background",returnName=T,palette="limited"))),
-      conditionalPanel("input.n43>=7",column(1,colourInput("col46", label=div(style= CSS34,"Cl 7"), "aquamarine",showColour="background",returnName=T,palette="limited"))),
-      conditionalPanel("input.n43>=8",column(1,colourInput("col47", label=div(style= CSS34,"Cl 8"), "sandybrown",showColour="background",returnName=T,palette="limited"))),
+      column(1,colourpicker::colourInput("col40", label=div(style= CSS34,"Cl 1"), "red",showColour="background",returnName=T,palette="limited")),
+      column(1,colourpicker::colourInput("col41", label=div(style= CSS34,"Cl 2"), "yellow",showColour="background",returnName=T,palette="limited")),
+      conditionalPanel("input.n43>=3",column(1,colourpicker::colourInput("col42", label=div(style= CSS34,"Cl 3"), "green",showColour="background",returnName=T,palette="limited"))),
+      conditionalPanel("input.n43>=4",column(1,colourpicker::colourInput("col43", label=div(style= CSS34,"Cl 4"), "cyan",showColour="background",returnName=T,palette="limited"))),
+      conditionalPanel("input.n43>=5",column(1,colourpicker::colourInput("col44", label=div(style= CSS34,"Cl 5"), "darkorange1",showColour="background",returnName=T,palette="limited"))),
+      conditionalPanel("input.n43>=6",column(1,colourpicker::colourInput("col45", label=div(style= CSS34,"Cl 6"), "magenta",showColour="background",returnName=T,palette="limited"))),
+      conditionalPanel("input.n43>=7",column(1,colourpicker::colourInput("col46", label=div(style= CSS34,"Cl 7"), "aquamarine",showColour="background",returnName=T,palette="limited"))),
+      conditionalPanel("input.n43>=8",column(1,colourpicker::colourInput("col47", label=div(style= CSS34,"Cl 8"), "sandybrown",showColour="background",returnName=T,palette="limited"))),
       column(2,div(style=CSS33,actionButton(inputId = "go43",label = div(style=CSS331,"Plot"))))
     ) # fluidRow END
   )})
